@@ -1,6 +1,10 @@
 const mongoose= require('mongoose')
 const ParticipantModel = require('../models/participantes')
+const BreederModel = require('../models/criadores')
+const ExpositorModel = require('../models/expositores')
 const Participant = mongoose.model('Participants')
+const Breeder = mongoose.model('Breeders')
+const Expositor = mongoose.model('Expositors')
 
 //Animal for competition register
 const register = async (req, res) => {
@@ -9,25 +13,63 @@ const register = async (req, res) => {
     const state = req.body.state.toUpperCase();
     const owner = req.body.owner;
     const breeder = req.body.breeder;
-     
+    const asociation = req.body.asociation.toUpperCase();
     
-        let newParticipant = new Participant({
+
+     
+    if(owner == true){    
+        let newExpositor = new Expositor({
             name : name, 
             state : state, 
-            owner : owner, 
-            breeder : breeder, 
+            asociation: asociation
         })
-        newParticipant.save(function(err, participant) {
+        newExpositor.save(function(err, breeders) {
             if (err) {
                 return res.status(400).send({
                     message: err
                 });
-            } else {
-            
-                return res.json({status:200, message: "Participante registrado"});
-            }
+            } /*else {
+                //return res.json({status:200, message: "Participante registrado"});
+                
+            }*/
         });
-
+    }
+        
+    if(breeder == true){
+        let newBreeder = new Breeder({
+            name : name, 
+            state : state, 
+            breeder : breeder, 
+            asociation: asociation
+        })
+        newBreeder.save(function(err, breeders) {
+            if (err) {
+                return res.status(400).send({
+                    message: err
+                });
+            } /*else {
+                //return res.json({status:200, message: "Participante registrado"});
+                
+            }*/
+        });
+    }
+    let newParticipant = new Participant({
+        name : name, 
+        state : state, 
+        owner : owner, 
+        breeder: breeder,
+        asociation: asociation
+    })
+    newParticipant.save(function(err, participant) {
+        if (err) {
+            return res.status(400).send({
+                message: err
+            });
+        } else {
+        
+            return res.json({status:200, message: "Participante registrado"});
+        }
+    });
 
 }
 
@@ -60,6 +102,7 @@ const update = async(req, res) => {
     const state = req.body.state.toUpperCase();
     const owner = req.body.owner;
     const breeder = req.body.breeder;
+    const asociation = req.body.asociation;
     
  
 try {
@@ -70,6 +113,7 @@ try {
                 'state': state,
                 'owner': owner,
                 'breeder':breeder,
+                'asociation': asociation,
                 updated_at: new Date() 
         } 
     }).exec();

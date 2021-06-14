@@ -4,9 +4,18 @@ const Category = mongoose.model('Categorys')
 
 const register = async (req, res) => {
     const name = req.body.name.toUpperCase();
+    const category = req.body.category;
+    const min = req.body.min;
+    const max = req.body.max;
+    const exhibition = req.body.exhibition;
      
         let newCategory = new Category({
-            name : name,         
+            name : name,   
+            name : name, 
+            category : category,
+            min: min,
+            max: max,
+            exhibition: exhibition      
         })
         newCategory.save(function(err, category) {
             if (err) {
@@ -43,9 +52,13 @@ const deleted = async (req, res) => {
 const update = async(req, res) => {
     const id = req.params.id
     const name = req.body.name.toUpperCase()
+    const category = req.body.category;
+    const min = req.body.min;
+    const max = req.body.max;
+    const exhibition = req.body.exhibition;
  
 try {
-    let categorys = await Category.updateOne({ '_id': id },{ $set :{'name': name, updated_at: new Date() } }).exec();
+    let categorys = await Category.updateOne({ '_id': id },{ $set :{'name': name, 'category':category, 'min':min, 'max':max ,'exhibition':exhibition, updated_at: new Date() } }).exec();
     return res.json({ categorys, message: "Categoria actualizada" });    
 } catch (error) {
     console.log(error)

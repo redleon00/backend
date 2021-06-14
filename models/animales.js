@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+//mongoose.set('useCreateIndex', true);
 
 let animalsSchema = new Schema({
   name: {
@@ -7,6 +8,12 @@ let animalsSchema = new Schema({
   },
   sex: {
     type: String
+  },
+  birthday: {
+    type: Date
+  },
+  type:{
+    type: String // Oveja o Cabra
   },
   race: {
     type: String
@@ -21,6 +28,18 @@ let animalsSchema = new Schema({
     type: String
   },
   breeder: {
+    type: String
+  },
+  team: {
+    type: String
+  },
+  ID_team:{
+    type: String
+  },
+  register:{
+    type: String,
+  },
+  tatoo:{
     type: String
   },
   status: {

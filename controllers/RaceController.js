@@ -26,7 +26,7 @@ const register = async (req, res) => {
 
 const list =   async (req, res) => {
     try {
-        let races = await Race.find({'name':{$ne : ''}}).exec();
+        let races = await Race.find({'name':{$ne : ''}}).sort({'tipo':-1}).exec();
         return res.json(races);    
     } catch (error) {
         console.log(error)

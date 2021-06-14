@@ -1,22 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let subcategorySchema = new Schema({
+let breederSchema = new Schema({
     name:{
         type: String,
         default: ''
     },
-    category:{
+    state:{
         type: String,
         default: ''
     },
-    min:{
-        type: Number,
-        default: 0
-    },
-    max:{
-        type: Number,
-        default: 0
+    asociation: {
+        type: String,
+        default: ''
     },
     status:{
         type: Boolean,
@@ -25,13 +21,14 @@ let subcategorySchema = new Schema({
     created_at: {
         type: Date,
         default: new Date()
-    },
-    updated_at: {
+      },
+      updated_at: {
         type: Date,
         default: new Date()
-    },
+      },
 
-},{
-    collection: 'subcategory'
-})
-module.exports = mongoose.model('Subcategorys', subcategorySchema) 
+}, {
+    collection: 'breeders'
+  })
+
+module.exports = mongoose.model('Breeders', breederSchema)

@@ -6,6 +6,17 @@ let categorySchema = new Schema({
         type: String,
         default: ''
     },
+    min:{
+        type: Number,
+        default: 0
+    },
+    max:{
+        type: Number,
+        default: 0
+    },
+    exhibition:{
+        type: Boolean
+    },
     status:{
         type: Boolean,
         default: true

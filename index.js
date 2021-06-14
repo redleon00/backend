@@ -7,7 +7,7 @@ app.use(cors());
 const mongoose = require("mongoose");
 const db = require("./database")
 
-app.set('puerto', process.env.PORT || 3000);
+app.set('puerto', 3001 || 3000);//process.env.PORT
 app.listen(app.get('puerto'), function () {
   console.log('Example app listening on port '+ app.get('puerto'));
 });
@@ -33,10 +33,11 @@ const routesParticipant = require('./routes/participant')
 const routesRace = require('./routes/race')
 const routesCategory = require('./routes/category')
 const routesSubcategory = require('./routes/subcategory')
-
+const routesTeam = require('./routes/team')
 
 app.use('/api/animal', routesAnimal)
 app.use('/api/participant', routesParticipant)
 app.use('/api/race', routesRace)
 app.use('/api/category', routesCategory)
 app.use('/api/subcategory', routesSubcategory)
+app.use('/api/teams', routesTeam)
