@@ -8,6 +8,7 @@ const register = async (req, res) => {
     const min = req.body.min;
     const max = req.body.max;
     const exhibition = req.body.exhibition;
+    const group = req.body.group
      
         let newCategory = new Category({
             name : name,   
@@ -15,7 +16,8 @@ const register = async (req, res) => {
             category : category,
             min: min,
             max: max,
-            exhibition: exhibition      
+            exhibition: exhibition,
+            group: group      
         })
         newCategory.save(function(err, category) {
             if (err) {
@@ -56,9 +58,10 @@ const update = async(req, res) => {
     const min = req.body.min;
     const max = req.body.max;
     const exhibition = req.body.exhibition;
+    const group = req.body.group;
  
 try {
-    let categorys = await Category.updateOne({ '_id': id },{ $set :{'name': name, 'category':category, 'min':min, 'max':max ,'exhibition':exhibition, updated_at: new Date() } }).exec();
+    let categorys = await Category.updateOne({ '_id': id },{ $set :{'name': name, 'category':category, 'min':min, 'max':max ,'exhibition':exhibition, 'group':group,updated_at: new Date() } }).exec();
     return res.json({ categorys, message: "Categoria actualizada" });    
 } catch (error) {
     console.log(error)

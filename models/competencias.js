@@ -2,17 +2,29 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let competenciasSchema =  new Schema ({
+    class:{ //de Exhibicion o Puntuado
+        type : String
+    },
+    type_comp:{
+        type: String //Categoria, Grupo, Raza, Supremo
+    },
     name:{
+        type: String
+    },
+    type_animal:{
         type: String
     },
     sex:{
         type:String
     },
+    race:{
+        type: String
+    },
     category:{
         type: String
     },
-    subcategoy:{
-        type: String
+    group:{
+        type: String // Menor, Joven, Adulto
     },
     pts_first:{
         type: Number,

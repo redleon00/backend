@@ -5,13 +5,10 @@ let teamsSchema = new Schema({
     name: {
         type: String
     },
-    animal_type: {
-        type: String
-    },
-    asociacion: {
-        type: String
-    },
     participant: {
+        type: String
+    },
+    animal_type: {
         type: String
     },
     status: {

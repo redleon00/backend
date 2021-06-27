@@ -18,10 +18,6 @@ let participanSchema = new Schema({
         type: Boolean,
         default: true
     },
-    asociation: {
-        type: String,
-        default: ''
-    },
     status:{
         type: Boolean,
         default: true

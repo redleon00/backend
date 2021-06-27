@@ -3,22 +3,63 @@ const AnimalModel = require('../models/animales')
 const Animal = mongoose.model('Animals')
 const TeamModel = require('../models/equipos').default
 const Team = mongoose.model('Teams')
+const ParticipantModel = require('../models/participantes')
+const Participant = mongoose.model('Participants')
+const PuntosCriaOviModel = require('../models/puntos_criador_ovino')
+const PuntosCriaOvi = mongoose.model('PtsCriaOvi')
+const PuntosCriaCapriModel = require('../models/puntos_criador_caprino')
+const PuntosCriaCapri = mongoose.model('PtsCriaOvi')
+
 
 //Animal for competition register
 const register = async (req, res) => {
     console.log(req.body)
-    const name = req.body.name.toUpperCase();
+    try {
+        const name = req.body.name.toUpperCase();
     const sex = req.body.sex;
     const birthday = req.body.birthday;
-    const type = req.body.type;
+    const type = req.body.type; //Ovino o Caprino
     const race = req.body.race.name;
     const category = req.body.categoria;
     const owner = req.body.owner;
-    const breeder = req.body.breeder.name;
+    const breeder = (typeof req.body.breeder == "object") ? req.body.breeder.name.toUpperCase() : req.body.breeder.toUpperCase();
     const team = req.body.team;
     const ID_team = req.body.ID_team;
     const register = req.body.register.toUpperCase();
     const tatoo = req.body.tatoo.toUpperCase();
+    const asociation = req.body.asociation
+    const group = req.body.group
+    console.log(breeder)
+    let existeB = await Participant.countDocuments({name:breeder}).exec()
+    console.log("existeB", breeder)
+    if(existeB == 0){
+        let newParticipant = new Participant({
+            name : breeder, 
+            state : 'LARA', 
+            owner : true, 
+            breeder: true
+        })
+        newParticipant.save()
+    }
+    if(type == 'OVINO'){
+        let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
+        if(existe == 0){
+            let xx = new PuntosCriaOvi({
+                participant:breeder,
+                team:team
+            })
+            xx.save();
+        }
+    }else{
+        let existe = await PuntosCriaCapri.countDocuments({team: name}).exec()
+        if(existe == 0){
+            let xx = new PuntosCriaCapri({
+                participant:breeder,
+                team:team
+            })
+            xx.save();
+        }
+    }
     let newAnimal = new Animal({
         name: name,
         sex: sex,
@@ -31,7 +72,9 @@ const register = async (req, res) => {
         team: team,
         ID_team: ID_team,
         register: register,
-        tatoo: tatoo
+        tatoo: tatoo,
+        asociation: asociation,
+        group: group
     })
     newAnimal.save(function (err, animal) {
         if (err) {
@@ -42,8 +85,12 @@ const register = async (req, res) => {
 
             return res.json({ status: 200, message: "Animal registrado", animal: animal });
         }
-    });
-
+    });    
+    } catch (error) {
+        console.log(error)
+        return res.json({ message: "Ups..ocurrió un error!"});
+    }
+    
 
 }
 
@@ -69,7 +116,7 @@ const deleted = async (req, res) => {
 }
 
 const update = async (req, res) => {
-
+    console.log("update", req.body)
     const name = req.body.name.toUpperCase();
     const sex = req.body.sex;
     const birthday = req.body.birthday;
@@ -78,8 +125,42 @@ const update = async (req, res) => {
     const breeder = req.body.breeder;
     const register = req.body.register.toUpperCase();
     const tatoo = req.body.tatoo.toUpperCase();
+    const asociation = req.body.asociation
+    const group = req.body.group
 
     try {
+        let existeB = await Participant.countDocuments({name:breeder}).exec()
+        console.log("existeB", breeder)
+        if(existeB == 0){
+            let newParticipant = new Participant({
+                name : breeder, 
+                state : 'LARA', 
+                owner : true, 
+                breeder: true
+            })
+            newParticipant.save()
+        }
+        let animalX = await Animal.findOne({'_id': req.params.id}).exec()
+        if(animalX.type == 'OVINO'){
+            let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
+            if(existe == 0){
+                let xx = new PuntosCriaOvi({
+                    participant:animalX.participant,
+                    team:name
+                })
+                xx.save();
+            }
+        }else{
+            let existe = await PuntosCriaCapri.countDocuments({team: name}).exec()
+            if(existe == 0){
+                let xx = new PuntosCriaCapri({
+                    participant:animalX.participant,
+                    team:name
+                })
+                xx.save();
+            }
+        }
+
         let animal = await Animal.updateOne(
             { '_id': req.params.id },
             {
@@ -93,6 +174,8 @@ const update = async (req, res) => {
                     'breeder': breeder,
                     'register': register,
                     'tatoo': tatoo,
+                    'asociation': asociation,
+                    'group': group,
                     'updated_at': new Date()
                 }
             }).exec();
@@ -122,7 +205,9 @@ const updateOne = async (req, res) => {
         const tatoo = req.body.tatoo;
         const team = req.body.team;
         const birthday = req.body.birthday
-        let animal = await Animal.updateOne({ '_id': req.params.id }, { $set: {'name':name, 'sex':sex, 'race':race, 'category':category, 'owner':owner, 'breeder':breeder, 'register':register, 'tatoo':tatoo, 'team':team, 'birthday':birthday} }).exec();
+        const asociation = req.body.asociation
+        const group = req.body.group
+        let animal = await Animal.updateOne({ '_id': req.params.id }, { $set: {'name':name, 'sex':sex, 'race':race, 'category':category, 'owner':owner, 'breeder':breeder, 'register':register, 'tatoo':tatoo, 'team':team, 'birthday':birthday, 'asociation': asociation, 'group': group} }).exec();
         return res.json({ animal, message: "Animal actualizado" });
 
     }

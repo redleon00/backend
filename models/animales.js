@@ -42,6 +42,12 @@ let animalsSchema = new Schema({
   tatoo:{
     type: String
   },
+  asociation:{
+    type: String
+  },
+  group:{
+    type: String
+  },
   status: {
     type: Boolean,
     default: true

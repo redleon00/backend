@@ -10,10 +10,6 @@ let expositorSchema = new Schema({
         type: String,
         default: ''
     },
-    asociation: {
-        type: String,
-        default: ''
-    },
     status:{
         type: Boolean,
         default: true

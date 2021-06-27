@@ -13,15 +13,11 @@ const register = async (req, res) => {
     const state = req.body.state.toUpperCase();
     const owner = req.body.owner;
     const breeder = req.body.breeder;
-    const asociation = req.body.asociation.toUpperCase();
-    
-
      
     if(owner == true){    
         let newExpositor = new Expositor({
             name : name, 
             state : state, 
-            asociation: asociation
         })
         newExpositor.save(function(err, breeders) {
             if (err) {
@@ -39,8 +35,7 @@ const register = async (req, res) => {
         let newBreeder = new Breeder({
             name : name, 
             state : state, 
-            breeder : breeder, 
-            asociation: asociation
+            breeder : breeder
         })
         newBreeder.save(function(err, breeders) {
             if (err) {
@@ -57,8 +52,7 @@ const register = async (req, res) => {
         name : name, 
         state : state, 
         owner : owner, 
-        breeder: breeder,
-        asociation: asociation
+        breeder: breeder
     })
     newParticipant.save(function(err, participant) {
         if (err) {
@@ -101,9 +95,7 @@ const update = async(req, res) => {
     const name = req.body.name.toUpperCase();
     const state = req.body.state.toUpperCase();
     const owner = req.body.owner;
-    const breeder = req.body.breeder;
-    const asociation = req.body.asociation;
-    
+    const breeder = req.body.breeder;  
  
 try {
     let participant = await Participant.updateOne(
@@ -113,7 +105,6 @@ try {
                 'state': state,
                 'owner': owner,
                 'breeder':breeder,
-                'asociation': asociation,
                 updated_at: new Date() 
         } 
     }).exec();

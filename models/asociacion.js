@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let breederSchema = new Schema({
+let AsociationSchema = new Schema({
     name:{
         type: String,
         default: ''
     },
-    state:{
+    name_large:{
         type: String,
         default: ''
     },
@@ -17,14 +17,14 @@ let breederSchema = new Schema({
     created_at: {
         type: Date,
         default: new Date()
-      },
-      updated_at: {
+    },
+    updated_at: {
         type: Date,
         default: new Date()
-      },
+    },
 
-}, {
-    collection: 'breeders'
+},{
+    collection: 'asociations'
   })
 
-module.exports = mongoose.model('Breeders', breederSchema)
+  module.exports = mongoose.model('Asociations', AsociationSchema) 

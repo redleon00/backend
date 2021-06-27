@@ -18,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
 const mongoUrl = db.db
+//const mongoUrl = process.env.MONGO_URL
 mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(
   () => {
@@ -34,6 +35,11 @@ const routesRace = require('./routes/race')
 const routesCategory = require('./routes/category')
 const routesSubcategory = require('./routes/subcategory')
 const routesTeam = require('./routes/team')
+const routesFunctions = require('./routes/functions')
+const routesCompetitions = require('./routes/competencias')
+const routesBd = require('./routes/bd')
+const results = require('./routes/results')
+const routesAsociation = require('./routes/asociations')
 
 app.use('/api/animal', routesAnimal)
 app.use('/api/participant', routesParticipant)
@@ -41,3 +47,8 @@ app.use('/api/race', routesRace)
 app.use('/api/category', routesCategory)
 app.use('/api/subcategory', routesSubcategory)
 app.use('/api/teams', routesTeam)
+app.use('/api/functions', routesFunctions)
+app.use('/api/competitions', routesCompetitions)
+app.use('/api/bd', routesBd)
+app.use('/api/results', results)
+app.use('/api/asociations', routesAsociation)

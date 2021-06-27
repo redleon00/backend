@@ -17,6 +17,9 @@ let categorySchema = new Schema({
     exhibition:{
         type: Boolean
     },
+    group:{
+        type: String
+    },
     status:{
         type: Boolean,
         default: true
