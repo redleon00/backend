@@ -123,20 +123,8 @@ const saveCategoryC = async (req, res) => {
             third_animal: third_animal,
             third_point: pts_third,
         })
-        //guadar el resultado
-            saveCategory.save(function (err, data) {
-                if (err) {
-                    return res.status(400).send({
-                        message: err
-                    });
-                } else {
-
-                    return res.json({ status: 200, message: "Resultados registrados" });
-                }
-            });
         await Competition.updateOne({ '_id': id_competencia }, { $set: { 'status': false } }).exec()
         //guardar los puntos
-
         if (type_animal == "OVINO") {
             await PuntosExpoOvi.updateOne({ team: firts_animal.team }, { $inc: { primero_category: pts_first } }).exec();
             await PuntosExpoOvi.updateOne({ team: second_animal.team }, { $inc: { segundo_category: pts_second } }).exec();
@@ -172,6 +160,17 @@ const saveCategoryC = async (req, res) => {
             await PuntosAsocCapri.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
             await PuntosAsocCapri.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
         }
+        //guadar el resultado
+        saveCategory.save(function (err, data) {
+            if (err) {
+                return res.status(400).send({
+                    message: err
+                });
+            } else {
+
+                return res.json({ status: 200, message: "Resultados registrados" });
+            }
+        });
 
     } catch (error) {
         return res.status(400).send({

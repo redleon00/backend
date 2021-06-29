@@ -1,15 +1,10 @@
 const mongoose = require('mongoose')
-const AnimalModel = require('../models/animales')
-const Animal = mongoose.model('Animals')
-const TeamModel = require('../models/equipos').default
-const Team = mongoose.model('Teams')
+const AnimalExModel = require('../models/animales_ex')
+const AnimalEx = mongoose.model('AnimalsEx')
+const TeamExModel = require('../models/equipos_ex')
+const TeamEx = mongoose.model('TeamsEx')
 const ParticipantModel = require('../models/participantes')
 const Participant = mongoose.model('Participants')
-const PuntosCriaOviModel = require('../models/puntos_criador_ovino')
-const PuntosCriaOvi = mongoose.model('PtsCriaOvi')
-const PuntosCriaCapriModel = require('../models/puntos_criador_caprino')
-const PuntosCriaCapri = mongoose.model('PtsCriaOvi')
-
 
 //Animal for competition register
 const register = async (req, res) => {
@@ -18,7 +13,7 @@ const register = async (req, res) => {
     const name = req.body.name.toUpperCase();
     const sex = req.body.sex;
     const birthday = req.body.birthday;
-    const type = req.body.type; //Ovino o Caprino
+    const type = req.body.animal_type; //Ovino o Caprino
     const race = req.body.race.name;
     const category = req.body.categoria;
     const owner = req.body.owner;
@@ -28,8 +23,8 @@ const register = async (req, res) => {
     const register = req.body.register.toUpperCase();
     const tatoo = req.body.tatoo.toUpperCase();
     const asociation = req.body.asociation
-    const group = req.body.group
-    console.log(breeder)
+    const group = ''
+    //console.log(breeder)
     let existeB = await Participant.countDocuments({name:breeder}).exec()
     console.log("existeB", breeder)
     if(existeB == 0){
@@ -41,7 +36,7 @@ const register = async (req, res) => {
         })
         newParticipant.save()
     }
-    if(type == 'OVINO'){
+   /* if(type == 'OVINO'){
         let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
         if(existe == 0){
             let xx = new PuntosCriaOvi({
@@ -59,8 +54,8 @@ const register = async (req, res) => {
             })
             xx.save();
         }
-    }
-    let newAnimal = new Animal({
+    }*/
+    let newAnimal = new AnimalEx({
         name: name,
         sex: sex,
         birthday: birthday,
@@ -96,19 +91,17 @@ const register = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let animals = await Animal.find({}).exec();
+        let animals = await AnimalEx.find({}).exec();
         return res.json(animals);
     } catch (error) {
         console.log(error)
     }
-
-
 }
 
 const deleted = async (req, res) => {
     const id = req.params.id
     try {
-        let animal = await Animal.deleteOne({ '_id': id }).exec();
+        let animal = await AnimalEx.deleteOne({ '_id': id }).exec();
         return res.json({ animal, message: "Animal eliminado" });
     } catch (error) {
         console.log(error)
@@ -126,7 +119,8 @@ const update = async (req, res) => {
     const register = req.body.register.toUpperCase();
     const tatoo = req.body.tatoo.toUpperCase();
     const asociation = req.body.asociation
-    const group = req.body.group
+    const group = ''
+    const type = req.body.animal_type; //Ovino o Caprino
 
     try {
         let existeB = await Participant.countDocuments({name:breeder}).exec()
@@ -140,8 +134,8 @@ const update = async (req, res) => {
             })
             newParticipant.save()
         }
-        let animalX = await Animal.findOne({'_id': req.params.id}).exec()
-        if(animalX.type == 'OVINO'){
+        let animalX = await AnimalEx.findOne({'_id': req.params.id}).exec()
+        /*if(animalX.type == 'OVINO'){
             let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
             if(existe == 0){
                 let xx = new PuntosCriaOvi({
@@ -159,9 +153,9 @@ const update = async (req, res) => {
                 })
                 xx.save();
             }
-        }
+        }*/
 
-        let animal = await Animal.updateOne(
+        let animal = await AnimalEx.updateOne(
             { '_id': req.params.id },
             {
                 $set:
@@ -176,6 +170,7 @@ const update = async (req, res) => {
                     'tatoo': tatoo,
                     'asociation': asociation,
                     'group': group,
+                    'type': type,
                     'updated_at': new Date()
                 }
             }).exec();
@@ -184,7 +179,6 @@ const update = async (req, res) => {
         console.log(error)
     }
 }
-
 const updateOne = async (req, res) => {
     //console.log(req.body)
     const changeTeam = req.body.changeTeam
@@ -192,7 +186,7 @@ const updateOne = async (req, res) => {
     //const oldteam = req.body.oldteam
     try {
         if (changeTeam) {
-            let numAnimals = await Team.countDocuments({ name: team.name }).exec()
+            let numAnimals = await TeamEx.countDocuments({ name: team.name }).exec()
             if (numAnimals < 10)
                 return res.json({ message: `El equipo ${team} está completo, intente en otro equipo` })
         } else {
@@ -207,8 +201,9 @@ const updateOne = async (req, res) => {
             const team = req.body.team;
             const birthday = req.body.birthday
             const asociation = req.body.asociation
-            const group = req.body.group
-            let animal = await Animal.updateOne({ '_id': req.params.id }, { $set: {'name':name, 'sex':sex, 'race':race, 'category':category, 'owner':owner, 'breeder':breeder, 'register':register, 'tatoo':tatoo, 'team':team, 'birthday':birthday, 'asociation': asociation, 'group': group} }).exec();
+            const group = ''
+            const type = req.body.type
+            let animal = await Animal.updateOne({ '_id': req.params.id }, { $set: {'name':name, 'sex':sex, 'race':race, 'category':category, 'owner':owner, 'breeder':breeder, 'register':register, 'tatoo':tatoo, 'team':team, 'birthday':birthday, 'asociation': asociation, 'group': group, 'type': type} }).exec();
             return res.json({ animal, message: "Animal actualizado" });
     
         }    
@@ -220,4 +215,4 @@ const updateOne = async (req, res) => {
 
 
 }
-module.exports = { register, list, deleted, update, updateOne }
+module.exports =  { register, list, deleted, update, updateOne }

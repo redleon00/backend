@@ -79,7 +79,7 @@ const list =   async (req, res) => {
 }
 
 const deleted = async (req, res) => {
-    console.log(req.params.id)
+    //console.log(req.params.id)
     const id = req.params.id
     try {
         let participants = await Participant.deleteOne({ '_id': id }).exec();
@@ -90,7 +90,7 @@ const deleted = async (req, res) => {
 }
 
 const update = async(req, res) => {
-    console.log(req.body)
+    //console.log(req.body)
     const id = req.params.id
     const name = req.body.name.toUpperCase();
     const state = req.body.state.toUpperCase();

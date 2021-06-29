@@ -12,9 +12,17 @@ const groups = ["MENOR", "JOVEN", "ADULTO"]
 const generate =   async (req, res) => { //genera las competencias por categorias
     let categorys = await Category.find({'exhibition':false}).exec();
     var races = await Race.find({}).exec();
-    
     let competition_name = []
     let count = await Competency.countDocuments({type_comp:'CATEGORIA'}).exec()
+
+    let existeRace = await Race.countDocuments({}).exec()
+    if(existeRace == 0){
+        return res.json({message:"Primero registre las RAZAS antes de crear las competencias"})
+    }
+    let existeCate = await Category.countDocuments({}).exec()
+    if(existeCate == 0){
+        return res.json({message:"Primero registre las CATEGORIAS antes de crear las competencias"})
+    }
     
     if(count > 0){
         return res.json({message:"Todas las competencias ya fueron creadas"})

@@ -39,6 +39,7 @@ const list =   async (req, res) => {
         return res.json(categorys);    
     } catch (error) {
         console.log(error)
+        return res.json({ message: "Ups..ocurrió un error!"});
     }
 }
 const deleted = async (req, res) => {
@@ -48,6 +49,7 @@ const deleted = async (req, res) => {
         return res.json({ categorys, message: "Categoria eliminada" });    
     } catch (error) {
         console.log(error)
+        return res.json({ message: "Ups..ocurrió un error!"});
     }
 }
 
@@ -65,6 +67,7 @@ try {
     return res.json({ categorys, message: "Categoria actualizada" });    
 } catch (error) {
     console.log(error)
+    return res.json({ message: "Ups..ocurrió un error!"});
 }
 }
 module.exports = {register, list, deleted, update}
