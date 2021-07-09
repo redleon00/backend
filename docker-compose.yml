@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  app:
+    build: ./backend/
+    environment:
+      MONGO_URL: "mongodb://db:27017/puntuador"
+      SECRET_KEY: "Friedrich Nietzsche"
+      PORT: 3001
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/:/usr/src
+      - /usr/src/node_modules
+      - /backend/public/
+    command: npx node index.js
+  
+  front: 
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    ports: 
+      - "8080:80"
+    depends_on: 
+      - db
+    
+
+  db:
+    image: mongo:bionic
+    volumes: 
+      - shared_database:/data/db
+
+volumes:
+  shared_database:
