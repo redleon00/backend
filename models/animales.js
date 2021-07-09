@@ -48,6 +48,9 @@ let animalsSchema = new Schema({
   group:{
     type: String
   },
+  animalAll_id:{
+    type:String
+  },
   status: {
     type: Boolean,
     default: true

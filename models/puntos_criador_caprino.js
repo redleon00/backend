@@ -40,6 +40,14 @@ let ptsCriaCapriSchema = new Schema({
         type:Number,
         default:0
     },
+    ordeno:{
+        type:Number,
+        default:0
+    },
+    ubre:{
+        type:Number,
+        default:0
+    },
     created_at:{
         type:Date,
         default: new Date()

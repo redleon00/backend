@@ -8,7 +8,7 @@ let teamsSchema = new Schema({
     participant: {
         type: String
     },
-    type: { //exhibicion
+    type: { //OVINO-CAPRINO
         type: String
     },
     status: {

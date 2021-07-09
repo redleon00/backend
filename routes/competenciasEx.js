@@ -1,0 +1,22 @@
+var router = require("express").Router();
+const { listCompRace, saveGroupR, listCompCeba, saveCeba, listCompMestizasCat,listCompMestizasGroup, listCompMestizasRaza, saveMestizasCat, mestizasCatWinners, saveMestizasGroup, mestizasGroupWinners, mestizasRaceWinners, saveMestizasRace, listCompUbre, saveUbre, listCompOrdeno, saveOrdeno, saveOrdenoFin} = require('../controllers/CompetitionExController')
+
+router.get('/listCompRace', listCompRace)
+router.post('/saveGroupR', saveGroupR)
+router.get('/listCompCeba',listCompCeba)
+router.post('/saveCeba',saveCeba)
+router.get('/listCompMestizasCat',listCompMestizasCat)
+router.get('/listCompMestizasGroup',listCompMestizasGroup)
+router.get('/listCompMestizasRaza',listCompMestizasRaza)
+router.post('/saveMestizasCat',saveMestizasCat)
+router.get('/mestizasCatWinners',mestizasCatWinners)
+router.post('/saveMestizasGroup',saveMestizasGroup)
+router.get('/mestizasGroupWinners',mestizasGroupWinners)
+router.get('/mestizasRaceWinners',mestizasRaceWinners)
+router.post('/saveMestizasRace',saveMestizasRace)
+router.get('/listCompUbre',listCompUbre)
+router.post('/saveUbre',saveUbre)
+router.get('/listCompOrdeno',listCompOrdeno)
+router.post('/saveOrdeno',saveOrdeno)
+router.post('/saveOrdenoFin',saveOrdenoFin)
+module.exports = router;

@@ -10,6 +10,10 @@ let raceSchema = new Schema({
         type: String,
         default: ''
     },
+    clase:{
+        type: Boolean, // competencia=false - exhibicion=true
+        default: false
+    },
     status:{
         type: Boolean,
         default: true

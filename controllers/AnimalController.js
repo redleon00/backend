@@ -8,13 +8,18 @@ const Participant = mongoose.model('Participants')
 const PuntosCriaOviModel = require('../models/puntos_criador_ovino')
 const PuntosCriaOvi = mongoose.model('PtsCriaOvi')
 const PuntosCriaCapriModel = require('../models/puntos_criador_caprino')
-const PuntosCriaCapri = mongoose.model('PtsCriaOvi')
+const PuntosCriaCapri = mongoose.model('PtsCriaCapri')
+const AnimalExModel = require('../models/animales_ex')
+const AnimalEx = mongoose.model('AnimalsEx')
+const AnimalAllModel = require('../models/animales_all')
+const AnimalAll = mongoose.model('AnimalsAll')
 
 
 //Animal for competition register
 const register = async (req, res) => {
     console.log(req.body)
     try {
+    var animalAll_id = ''
     const name = req.body.name.toUpperCase();
     const sex = req.body.sex;
     const birthday = req.body.birthday;
@@ -42,24 +47,49 @@ const register = async (req, res) => {
         newParticipant.save()
     }
     if(type == 'OVINO'){
-        let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
+        let existe = await PuntosCriaOvi.countDocuments({participant: breeder}).exec()
         if(existe == 0){
             let xx = new PuntosCriaOvi({
-                participant:breeder,
-                team:team
+                participant:breeder
             })
             xx.save();
         }
     }else{
-        let existe = await PuntosCriaCapri.countDocuments({team: name}).exec()
+        let existe = await PuntosCriaCapri.countDocuments({participant: breeder}).exec()
         if(existe == 0){
             let xx = new PuntosCriaCapri({
-                participant:breeder,
-                team:team
+                participant:breeder
+               
             })
             xx.save();
         }
     }
+    let existeAll = await AnimalAll.countDocuments({'name':name, 'owner':owner}).exec()
+    console.log("existeAll", existeAll)
+    if(existeAll == 0){
+        let newAll = new AnimalAll({
+            name: name,
+            sex: sex,
+            birthday: birthday,
+            type: type,
+            race: race,
+            owner: owner,
+            breeder: breeder,
+            register: register,
+            tatoo: tatoo,
+            asociation: asociation
+        })
+        let test = await newAll.save() //Se guarda el animal en la collection de todos los animales
+        let animalAll = await AnimalAll.find({}).sort({_id:-1}).limit(1).exec();  
+        console.log("animalAll", animalAll)  
+        animalAll_id = animalAll[0]._id
+        console.log("aqui",animalAll[0]._id)
+    }else{
+        let animalAll = await AnimalAll.find({'name':name, 'owner':owner}).exec();
+        animalAll_id = animalAll[0]._id
+        console.log("aqui 2",animalAll[0]._id)
+    }
+    
     let newAnimal = new Animal({
         name: name,
         sex: sex,
@@ -74,7 +104,8 @@ const register = async (req, res) => {
         register: register,
         tatoo: tatoo,
         asociation: asociation,
-        group: group
+        group: group,
+        animalAll_id:animalAll_id
     })
     newAnimal.save(function (err, animal) {
         if (err) {
@@ -108,8 +139,14 @@ const list = async (req, res) => {
 const deleted = async (req, res) => {
     const id = req.params.id
     try {
-        let animal = await Animal.deleteOne({ '_id': id }).exec();
-        return res.json({ animal, message: "Animal eliminado" });
+        let existe = await Animal.countDocuments({ '_id': id }).exec();
+        if(existe > 0){
+            let animal = await Animal.findOne({ '_id': id }).exec();
+            console.log(animal)
+                         await Animal.deleteOne({ '_id': id }).exec();
+                         await AnimalAll.deleteOne({ '_id': animal.animalAll_id }).exec();
+            return res.json({ animal, message: "Animal eliminado" });
+        }
     } catch (error) {
         console.log(error)
     }
@@ -130,7 +167,7 @@ const update = async (req, res) => {
 
     try {
         let existeB = await Participant.countDocuments({name:breeder}).exec()
-        console.log("existeB", breeder)
+        //console.log("existeB", breeder)
         if(existeB == 0){
             let newParticipant = new Participant({
                 name : breeder, 
@@ -142,20 +179,18 @@ const update = async (req, res) => {
         }
         let animalX = await Animal.findOne({'_id': req.params.id}).exec()
         if(animalX.type == 'OVINO'){
-            let existe = await PuntosCriaOvi.countDocuments({team: name}).exec()
+            let existe = await PuntosCriaOvi.countDocuments({participant: name}).exec()
             if(existe == 0){
                 let xx = new PuntosCriaOvi({
-                    participant:animalX.participant,
-                    team:name
+                    participant:animalX.participant
                 })
                 xx.save();
             }
         }else{
-            let existe = await PuntosCriaCapri.countDocuments({team: name}).exec()
+            let existe = await PuntosCriaCapri.countDocuments({participant: name}).exec()
             if(existe == 0){
                 let xx = new PuntosCriaCapri({
-                    participant:animalX.participant,
-                    team:name
+                    participant:animalX.participant
                 })
                 xx.save();
             }
@@ -179,6 +214,24 @@ const update = async (req, res) => {
                     'updated_at': new Date()
                 }
             }).exec();
+        //Actualizacion en collection de animalAll
+        let updated = await Animal.findOne({'_id':req.params.id}).exec();
+        await AnimalAll.updateOne(
+            { '_id': updated.animalAll_id },
+            {
+                $set:
+                {
+                    'name': name,
+                    'sex': sex,
+                    'birthday': birthday,
+                    'race': race,
+                    'breeder': breeder,
+                    'register': register,
+                    'tatoo': tatoo,
+                    'asociation': asociation,
+                    'updated_at': new Date()
+                }
+            }).exec();    
         return res.json({ animal, message: "Animal actualizado" });
     } catch (error) {
         console.log(error)

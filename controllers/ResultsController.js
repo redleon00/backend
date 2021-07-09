@@ -180,8 +180,7 @@ const resultAsoc = async (req, res) => {
         let resultsAsocOvi = await TablaAsocOvi.
         aggregate([
             {$project:{
-                participant:1, 
-                team:1,
+                name:1,
                 primero_category:1,
                 segundo_category:1, 
                 tercero_category:1,
@@ -205,8 +204,7 @@ const resultAsoc = async (req, res) => {
         let resultsAsocCapri = await TablaAsocCapri.
         aggregate([
             {$project:{
-                participant:1, 
-                team:1,
+                name:1,
                 primero_category:1,
                 segundo_category:1, 
                 tercero_category:1,
@@ -228,7 +226,7 @@ const resultAsoc = async (req, res) => {
                     ]}}},{$sort:{team:1}}])
 
 
-        return res.json({dataAsocOvi:resultsAsocOvi, dataCriaCapri:resultsAsocCapri});
+        return res.json({dataAsocOvi:resultsAsocOvi, dataAsocCapri:resultsAsocCapri});
     } catch (error) {
         console.log(error)
     }

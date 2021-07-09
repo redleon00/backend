@@ -8,14 +8,25 @@ const Participant = moongose.model('Participants')
 
 const list = async (req, res) => {
     try {
-        let teams = await TeamsEx.aggregate([{
+        /*let teams = await TeamsEx.aggregate([{
             $lookup: {
                 from: "animals_ex",
                 localField: "name",
                 foreignField: "team",
                 as: "all_teams"
             }
-        }]).exec();
+        }]).exec();*/
+        let teams = await TeamsEx.aggregate([
+            {"$addFields":{"teamId":{"$toString": "$_id"}} }, 
+            {"$lookup":
+            {
+                "from":"animals_ex", 
+                "localField":"teamId", 
+                "foreignField":"ID_team", 
+                "as":"all_teams"
+            }
+        }
+    ]).exec()
         return res.json(teams);
     } catch (error) {
         console.log(error)
@@ -26,7 +37,7 @@ const register = async (req, res) => {
     //console.log(req.body)
     try {
         const name = req.body.name.toUpperCase();
-        const type = "EXHIBICION";
+        const type = req.body.animal_type;
         const participant = (typeof req.body.participant == "object") ? req.body.participant.name : req.body.participant;
 
         let existeP = await Participant.countDocuments({name:participant}).exec()
@@ -112,8 +123,14 @@ try {
 const deleted = async (req, res) => {
     const id = req.params.id
     try {
+        let all_animals_teams = await AnimalEx.find({'ID_team': id}).exec()
+        if(all_animals_teams.length > 0 ){
+            all_animals_teams.map((x) =>{
+                AnimalAll.deleteOne({'_id':x.animalAll_id}).exec()
+            })
+        }
         let animals = AnimalEx.deleteMany({'ID_team': id}).exec()
-        let team = await TeamEx.deleteOne({ '_id': id }).exec();
+        let team = await TeamsEx.deleteOne({ '_id': id }).exec();
         return res.json({ team, message: "Equipo eliminado" });    
     } catch (error) {
         console.log(error)

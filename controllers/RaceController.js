@@ -5,10 +5,12 @@ const Race = mongoose.model('Races')
 const register = async (req, res) => {
     const name = req.body.name.toUpperCase();
     const type = req.body.tp;
+    const clase = req.body.clase;
      
         let newRace = new Race({
             name : name, 
-            tipo : type        
+            tipo : type,
+            clase: clase        
         })
         newRace.save(function(err, race) {
             if (err) {
@@ -47,8 +49,9 @@ const update = async(req, res) => {
     const id = req.params.id
     const name = req.body.name.toUpperCase()
     const type = req.body.tp
+    const clase = req.body.clase
 try {
-    let races = await Race.updateOne({ '_id': id },{ $set :{'name': name, 'tipo': type, updated_at: new Date() } }).exec();
+    let races = await Race.updateOne({ '_id': id },{ $set :{'name': name, 'tipo': type, 'clase':clase,updated_at: new Date() } }).exec();
     return res.json({ races, message: "Raza actualizada" });    
 } catch (error) {
     console.log(error)
