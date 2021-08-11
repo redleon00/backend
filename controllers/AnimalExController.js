@@ -274,7 +274,7 @@ const updateOne = async (req, res) => {
 const listCeba = async (req, res) => {
     try {
         let animals = await AnimalEx.find({$or:[{race:'CORDEROS DE CEBA'},{race:'CEBA'}]}).exec();
-        console.log(animals)
+        //console.log(animals)
         return res.json(animals);
     } catch (error) {
         console.log(error)
@@ -286,7 +286,7 @@ const listCeba = async (req, res) => {
 const listMilker = async (req, res) => {
     try {
         let animals = await AnimalEx.find({$or:[{best_tits: true},{milker:true}]}).exec();
-        console.log(animals)
+        //console.log(animals)
         return res.json(animals);
     } catch (error) {
         console.log(error)
@@ -298,7 +298,7 @@ const listMilker = async (req, res) => {
 const listUbre = async (req, res) => {
     try {
         let animals = await AnimalEx.find({best_tits: true}).exec();
-        console.log(animals)
+        //console.log(animals)
         return res.json(animals);
     } catch (error) {
         console.log(error)
@@ -312,6 +312,7 @@ const listOrdeno = async (req, res) => {
         //let animals = await AnimalEx.find({milker: true}).exec();
         //console.log(animals)
         let animals = await AnimalEx.aggregate([
+            { "$match": { "milker": true } },
             {"$addFields":{"animalId":{"$toString": "$_id"}} }, 
             {"$lookup":
             {
@@ -322,6 +323,7 @@ const listOrdeno = async (req, res) => {
             }
         }
     ]).exec()
+        //console.log("animales milker", animals)
         return res.json(animals);
     } catch (error) {
         console.log(error)

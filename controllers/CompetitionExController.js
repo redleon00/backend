@@ -11,6 +11,8 @@ const ResultsMestGroupModel = require('../models/resultsMestGroup')
 const ResultsMestGroup = mongoose.model('ResultsMG')
 const ResultsMestRaceModel = require('../models/resultsMestRace')
 const ResultsMestRace = mongoose.model('ResultsMR')
+const AnimalExModel = require('../models/animales_ex')
+const AnimalEx = mongoose.model('AnimalsEx')
 
 const ResultsOrdenoModel = require('../models/resultsOrdeno')
 const ResultsOrdeno = mongoose.model('ResultsOrdeno')
@@ -129,6 +131,7 @@ const saveGroupR = async (req, res) => {
         const id_competencia = req.body.id_competencia
         const name_competencia = req.body.name_competencia
         const sex = req.body.sex
+        const race = req.body.race
         const type_animal = req.body.type_animal
         const firts_animal = req.body.firts_animal
         const pts_first = req.body.pts_first
@@ -142,6 +145,7 @@ const saveGroupR = async (req, res) => {
             name_competencia: name_competencia,
             sex: sex,
             category: category,
+            race: race,
             type_animal: type_animal,
             firts_animal: firts_animal,
             firts_point: pts_first,
@@ -478,11 +482,12 @@ const saveOrdeno = async (req, res) =>{
 }
 
 const saveOrdenoFin = async (req, res) =>{
-    console.log("data", req.body)
+    //console.log("data", req.body)
     try {
+        
         let points = [15, 10, 5]
         //let datos = await ResultsOrdeno.find({}).sort({})
-        await CompetitionEx.updateOne({ '_id': req.body._id }, { $set: { 'status': false } }).exec()
+        await CompetitionEx.updateOne({'type_comp': 'ORDEÑO' }, { $set: { 'status': false } }).exec()
         let resultsOrdeno = await ResultsOrdeno.
         aggregate([
             {$project:{
@@ -514,7 +519,7 @@ const saveOrdenoFin = async (req, res) =>{
             
             
         }          
-
+        await AnimalEx.updateMany({'milker':true},{$set:{'status': false}}).exec()
         res.json({ status: 200, message: "Resultados registrados" });    
     } catch (error) {
         console.log(error)

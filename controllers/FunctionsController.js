@@ -13,6 +13,14 @@ const AnimalModel = require('../models/animales')
 const Animal = mongoose.model('Animals')
 const PuntosCriaCapriModel = require('../models/puntos_criador_caprino')
 const PtsCriaCapri = mongoose.model('PtsCriaCapri')
+const ResultCModel = require('../models/resultsCategory')
+const ResultsC = mongoose.model('ResultsC')
+const ResultGModel = require('../models/resultsGroup')
+const ResultsG = mongoose.model('ResultsG')
+const ResultRModel = require('../models/resultsRace')
+const ResultsR = mongoose.model('ResultsR')
+const ResultSModel = require('../models/resultsSupreme')
+const ResultsS = mongoose.model('ResultsS')
 const sex = ["H", "M"]
 const groups = ["MENOR", "JOVEN", "ADULTO"]
 
@@ -45,11 +53,12 @@ const generate = async (req, res) => { //genera las competencias por categorias
 
             for (let i = 0; i < sex.length; i++) {
                 let _sex = sex[i];
-                competition_name.push(_sex + " " + _specimen + " " + _race + " " + _category)
+                let name_sex = (sex[i] == 'H') ? "HEMBRAS" : "MACHOS"
+                competition_name.push(name_sex + " / " + " / " + _race + " / " + _category)
                 let newCompetency = new Competency({
                     class: _class,
                     type_comp: 'categoria'.toUpperCase(),
-                    name: _sex + " " + _specimen + " " + _race + " " + _category,
+                    name: name_sex + " "+_race + " " + _category,
                     type_animal: _specimen,
                     sex: _sex,
                     race: _race,
@@ -88,12 +97,13 @@ const generateGroup = async (req, res) => { //genera las competencias por catego
             const _race = races[j].name;
             const _specimen = races[j].tipo;
             for (let k = 0; k < sex.length; k++) {
-                const _sex = sex[k];
-                competition_name.push(_sex + " " + _race + " " + _specimen + " " + _group)
+                let _sex = sex[k];
+                let name_sex = (sex[i] == 'H') ? "HEMBRAS" : "MACHOS"
+                competition_name.push(name_sex + "/" + _race + "/" + _group)
                 let newCompetency = new Competency({
                     class: 'PUNTUADO',
                     type_comp: 'GRUPO',
-                    name: _sex + " " + _specimen + " " + _race + " " + _group,
+                    name: _sex + " " + _specimen + " / " + _race + " / " + _group,
                     type_animal: _specimen,
                     sex: _sex,
                     race: _race,
@@ -125,11 +135,12 @@ const generateRace = async (req, res) => { //genera las competencias por categor
         const _specimen = races[j].tipo;
         for (let k = 0; k < sex.length; k++) {
             const _sex = sex[k];
-            competition_name.push(_sex + " " + _race + " " + _specimen)
+            let name_sex = (sex[i] == 'H') ? "HEMBRAS" : "MACHOS"
+            competition_name.push(name_sex + "/" + _race)
             let newCompetency = new Competency({
                 class: 'PUNTUADO',
                 type_comp: 'RAZA',
-                name: _sex + " " + _specimen + " " + _race,
+                name: _sex + " " + _specimen + " / " + _race,
                 type_animal: _specimen,
                 sex: _sex,
                 race: _race,
@@ -159,11 +170,12 @@ const generateSupreme = async (req, res) => { //genera las competencias por cate
         const _specimen = specimen[j];
         for (let k = 0; k < sex.length; k++) {
             const _sex = sex[k];
-            competition_name.push(_sex + " " + _specimen)
+            let name_sex = (sex[i] == 'H') ? "HEMBRAS" : "MACHOS"
+            competition_name.push(name_sex + " / " + _specimen + " / " + "SUPREMO")
             let newCompetency = new Competency({
                 class: 'PUNTUADO',
                 type_comp: 'SUPREMO',
-                name: _sex + " " + _specimen + " " + "SUPREMO",
+                name: name_sex + " / " + _specimen + " / " + "SUPREMO",
                 type_animal: _specimen,
                 sex: _sex,
                 pts_first: 0,
@@ -185,41 +197,49 @@ const generateSupreme = async (req, res) => { //genera las competencias por cate
     return res.json({ data: competition_name, message: "Competencias creadas" })
 
 }
-
+/******************************************************************* */
 // competencias de exhibicion 
 const generateEx = async (req, res) => { //genera las competencias por categorias
     const specimen = ["OVINO", "CAPRINO"]
-    const category = await Category.find({ exhibition: true }).exec()
+    const categorys = await Category.find({ exhibition: true }).exec()
+    var races = await Race.find({}).exec();
     let competition_name = []
     let count = await CompetencyEx.countDocuments({ type_comp: 'CATEGORIA' }).exec()
 
     if (count > 0) {
         return res.json({ message: "Todas las competencias ya fueron creadas" })
     }
-    for (let i = 0; i < category.length; i++) {
-        const cate = category[i].name;
-        for (let j = 0; j < specimen.length; j++) {
-            const _specimen = specimen[j];
-            for (let k = 0; k < sex.length; k++) {
-                const _sex = sex[k];
-                competition_name.push(_sex + " " + _specimen)
+    for (let k = 0; k < categorys.length; k++) {
+        let _category = categorys[k].name;
+        //let _group = categorys[k].group;
+        let _class = 'EXHIBICION';
+        for (let l = 0; l < races.length; l++) {
+            let _race = races[l].name;
+            let _specimen = races[l].tipo;
+
+            for (let i = 0; i < sex.length; i++) {
+                let _sex = sex[i];
+                competition_name.push(_sex + " " + _specimen + " " + _race + " " + _category)
                 let newCompetency = new CompetencyEx({
-                    class: 'EXHIBICION',
+                    class: _class,
                     type_comp: 'CATEGORIA',
-                    name: _sex + " " + _specimen + " " + cate,
+                    name: _sex + " " + _specimen + " " + _race + " " + _category,
                     type_animal: _specimen,
                     sex: _sex,
-                    category: cate,
+                    race: _race,
+                    category: _category,
+                    group: 'MENOR',
                     pts_first: 0,
                     pts_second: 0,
                     pts_third: 0
                 })
-                newCompetency.save();
-
+                newCompetency.save()
             }
 
         }
+
     }
+
     return res.json({ data: competition_name, message: "Competencias creadas" })
 
 }
@@ -485,4 +505,90 @@ const genCria = async (req, res) => {
     //return res.json({ status: 200, message: "Criador Creado", type:"success" });
 }
 
-module.exports = { generate, generateGroup, generateRace, generateSupreme, generateEx, generateExCeba, generateMestizas, generateGroupMestizas, generateRaceMestizas, getAnimalsExcel, getAnimalsExcel2, genCria, betterTitsComp, milkerComp }
+const resultCategory = async (req, res) => {
+    try {
+        let results = await ResultsC.find({ },{"name_competencia" :1,
+        "category" : 1,
+        "group" : 1,
+        "sex" : 1,
+        "race" : 1,
+        "type_animal" : 1,
+        "firts_animal.name":1,
+        "firts_animal.birthday":1,
+        "firts_animal.team":1,
+        "firts_animal.breeder":1,
+        "second_animal.name":1,
+        "second_animal.birthday":1,
+        "second_animal.team":1,
+        "second_animal.breeder":1,
+        "third_animal.name":1,
+        "third_animal.birthday":1,
+        "third_animal.team":1,
+        "third_animal.breeder":1
+    }).sort({ '_id': 1, }).exec();
+        console.log(results)
+        return res.json({results});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const resultGroup = async (req, res) => {
+    try {
+        let results = await ResultsG.find({ },{"name_competencia" :1,
+        "category" : 1,
+        "group" : 1,
+        "sex" : 1,
+        "race" : 1,
+        "type_animal" : 1,
+        "firts_animal.name":1,
+        "firts_animal.birthday":1,
+        "firts_animal.team":1,
+        "firts_animal.breeder":1
+    }).sort({ '_id': 1, }).exec();
+        return res.json({results});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const resultRace = async (req, res) => {
+    try {
+        let results = await ResultsR.find({ },{"name_competencia" :1,
+        "type_animal" : 1,
+        "sex" : 1,
+        "race" : 1,
+        "firts_animal.name":1,
+        "firts_animal.birthday":1,
+        "firts_animal.team":1,
+        "firts_animal.breeder":1,
+        "second_animal.name":1,
+        "second_animal.birthday":1,
+        "second_animal.team":1,
+        "second_animal.breeder":1,
+    }).sort({ '_id': 1, }).exec();
+        return res.json({results});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const resultSupreme = async (req, res) => {
+    try {
+        let results = await ResultsS.find({ },{"name_competencia" :1,
+        "type_animal" : 1,
+        "sex" : 1,
+        "firts_animal.race":1,
+        "firts_animal.name":1,
+        "firts_animal.category":1,
+        "firts_animal.birthday":1,
+        "firts_animal.team":1,
+        "firts_animal.breeder":1
+    }).sort({ '_id': 1, }).exec();
+        return res.json({results});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+module.exports = { generate, generateGroup, generateRace, generateSupreme, generateEx, generateExCeba, generateMestizas, generateGroupMestizas, generateRaceMestizas, getAnimalsExcel, getAnimalsExcel2, genCria, betterTitsComp, milkerComp, resultCategory, resultGroup, resultRace,resultSupreme }

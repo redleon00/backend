@@ -10,6 +10,14 @@ let AsociationSchema = new Schema({
         type: String,
         default: ''
     },
+    ovino:{
+        type: Boolean,
+        default: false
+    },
+    caprino:{
+        type: Boolean,
+        default: false
+    },
     status:{
         type: Boolean,
         default: true

@@ -17,8 +17,8 @@ app.use(express.json());
 //application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }))
 
-const mongoUrl = db.db
-//const mongoUrl = process.env.MONGO_URL
+//const mongoUrl = db.db
+const mongoUrl = process.env.MONGO_URL || db.db
 mongoose.connect(mongoUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(
   () => {

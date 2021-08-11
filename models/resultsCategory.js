@@ -56,6 +56,10 @@ let resultCSchema = new Schema({
         type: Date,
         default: new Date()
     },
+    status_result: {
+        type: String,
+        default: 'V' // V =  Valid, D = Desert
+    }
 }, {
     collection: 'resultsC'
   })

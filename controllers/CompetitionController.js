@@ -49,7 +49,7 @@ const listCategoria = async (req, res) => {
                                       { $eq: ["$sex", "$$sex_animal"] },
                                       { $eq: ["$group", "$$group_animal"] }
                                         ] } } }], 
-                                      as: "animals_comp" } }]).exec()
+                                      as: "animals_comp" } }]).sort({race:1, sex:1}).exec()
 
         return res.json(competitions);
     } catch (error) {
@@ -59,7 +59,30 @@ const listCategoria = async (req, res) => {
 
 const listGroup = async (req, res) => {
     try {
-        let competitions = await Competition.find({ type_comp: 'GRUPO' }).sort({ 'race': -1, }).exec();
+
+        let competitions = await Competition.find({ type_comp: 'GRUPO' }).sort({ 'race': 1, 'sex':1 }).exec();
+       /* let competitions = await Competition.aggregate([
+            {$match: {type_comp:'GRUPO'}},
+            { $lookup: 
+                { from: 'resultsC', 
+                  $unwind:'$firts_animal',
+                  let: { 
+                         type_animal: "$type", 
+                         race_animal: "$race",
+                         sex_animal:"$sex",
+                         group_animal:"$grupo"   }, 
+                         
+                  pipeline: [{ $match: 
+                  { $expr: 
+                  { $and: [ 
+                  { $eq: ["$type_animal", "$$type_animal"] }, 
+                  { $eq: ["$race", "$$race_animal"] },
+                  { $eq: ["$sex", "$$sex_animal"] },
+                  { $eq: ["$group_animal", "$$group_animal"] }
+                    ] } } }], 
+                  as: "animals_comp" } }]).sort({race:1, sex:1}).exec()*/
+                  
+        console.log(competitions)          
         return res.json(competitions);
     } catch (error) {
         console.log(error)
@@ -68,7 +91,7 @@ const listGroup = async (req, res) => {
 
 const listRace = async (req, res) => {
     try {
-        let competitions = await Competition.find({ type_comp: 'RAZA' }).sort({ 'race': -1, }).exec();
+        let competitions = await Competition.find({ type_comp: 'RAZA' }).sort({ 'race': 1, 'sex':1 }).exec();
         return res.json(competitions);
     } catch (error) {
         console.log(error)
@@ -108,6 +131,7 @@ const saveCategoryC = async (req, res) => {
         const pts_second = (!req.body.second_animal) ? 0 : req.body.pts_second
         const third_animal = (!req.body.third_animal) ? '' : req.body.third_animal
         const pts_third = (!req.body.third_animal) ? 0 : req.body.pts_third 
+        const status_result = req.body.status_result
         let saveCategory = new ResultsC({
             id_competencia: id_competencia,
             name_competencia: name_competencia,
@@ -122,42 +146,51 @@ const saveCategoryC = async (req, res) => {
             second_point: pts_second,
             third_animal: third_animal,
             third_point: pts_third,
+            status_result: status_result
         })
         await Competition.updateOne({ '_id': id_competencia }, { $set: { 'status': false } }).exec()
         //guardar los puntos
-        if (type_animal == "OVINO") {
+        if (type_animal === "OVINO") {
             await PuntosExpoOvi.updateOne({ team: firts_animal.team }, { $inc: { primero_category: pts_first } }).exec();
-            await PuntosExpoOvi.updateOne({ team: second_animal.team }, { $inc: { segundo_category: pts_second } }).exec();
-            await PuntosExpoOvi.updateOne({ team: third_animal.team }, { $inc: { tercero_category: pts_third } }).exec();
-
             await PuntosCriaOvi.updateOne({ participant: firts_animal.breeder }, { $inc: { primero_category: pts_first } }).exec();
-            await PuntosCriaOvi.updateOne({ participant: second_animal.breeder }, { $inc: { segundo_category: pts_second } }).exec();
-            await PuntosCriaOvi.updateOne({ participant: third_animal.breeder }, { $inc: { tercero_category: pts_third } }).exec();
-
             await PuntosAsoc.updateOne({ name: firts_animal.asociation }, { $inc: { primero_category: 1 } }).exec();
-            await PuntosAsoc.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
-            await PuntosAsoc.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
-
             await PuntosAsocOvi.updateOne({ name: firts_animal.asociation }, { $inc: { primero_category: 1 } }).exec();
-            await PuntosAsocOvi.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
-            await PuntosAsocOvi.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
 
-        } else {
+            if(second_animal.length > 0){
+                await PuntosExpoOvi.updateOne({ team: second_animal.team }, { $inc: { segundo_category: pts_second } }).exec();
+                await PuntosCriaOvi.updateOne({ participant: second_animal.breeder }, { $inc: { segundo_category: pts_second } }).exec();
+                await PuntosAsoc.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
+                await PuntosAsocOvi.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
+            }
+
+            if(third_animal.length > 0){
+                await PuntosExpoOvi.updateOne({ team: third_animal.team }, { $inc: { tercero_category: pts_third } }).exec();
+                await PuntosCriaOvi.updateOne({ participant: third_animal.breeder }, { $inc: { tercero_category: pts_third } }).exec();
+                await PuntosAsoc.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();    
+                await PuntosAsocOvi.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
+            }
+            
+        } else if(type_animal === "CAPRINO") {
+            
             await PuntosExpoCapri.updateOne({ team: firts_animal.team }, { $inc: { primero_category: pts_first } }).exec();
-            await PuntosExpoCapri.updateOne({ team: second_animal.team }, { $inc: { segundo_category: pts_second } }).exec();
-            await PuntosExpoCapri.updateOne({ team: third_animal.team }, { $inc: { tercero_category: pts_third } }).exec();
-
             await PuntosCriaCapri.updateOne({ participant: firts_animal.breeder }, { $inc: { primero_category: pts_first } }).exec();
-            await PuntosCriaCapri.updateOne({ participant: second_animal.breeder }, { $inc: { segundo_category: pts_second } }).exec();
-            await PuntosCriaCapri.updateOne({ participant: third_animal.breeder }, { $inc: { tercero_category: pts_third } }).exec();
-
             await PuntosAsoc.updateOne({ name: firts_animal.asociation }, { $inc: { primero_category: 1 } }).exec();
-            await PuntosAsoc.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
-            await PuntosAsoc.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
-
             await PuntosAsocCapri.updateOne({ name: firts_animal.asociation }, { $inc: { primero_category: 1 } }).exec();
-            await PuntosAsocCapri.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
-            await PuntosAsocCapri.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
+
+            if(second_animal.length > 0 ){
+                await PuntosCriaCapri.updateOne({ participant: second_animal.breeder }, { $inc: { segundo_category: pts_second } }).exec();
+                await PuntosExpoCapri.updateOne({ team: second_animal.team }, { $inc: { segundo_category: pts_second } }).exec();
+                await PuntosAsoc.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
+                await PuntosAsocCapri.updateOne({ name: second_animal.asociation }, { $inc: { segundo_category: 1 } }).exec();
+            }
+            
+            if(third_animal.length > 0){
+                await PuntosCriaCapri.updateOne({ participant: third_animal.breeder }, { $inc: { tercero_category: pts_third } }).exec();
+                await PuntosExpoCapri.updateOne({ team: third_animal.team }, { $inc: { tercero_category: pts_third } }).exec();
+                await PuntosAsoc.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
+                await PuntosAsocCapri.updateOne({ name: third_animal.asociation }, { $inc: { tercero_category: 1 } }).exec();
+            }
+                
         }
         //guadar el resultado
         saveCategory.save(function (err, data) {

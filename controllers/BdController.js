@@ -53,6 +53,8 @@ const ResultsMestRaceModel = require('../models/resultsMestRace')
 const ResultsMestRace = mongoose.model('ResultsMR')
 const ResultsUbreModel = require('../models/resultsUbre')
 const ResultsUbre = mongoose.model('ResultsUbre')
+const ResultsOrdenoModel = require('../models/resultsOrdeno')
+const ResultsOrdeno = mongoose.model('ResultsOrdeno')
 
 
 const AnimalAllModel = require('../models/animales_all')
@@ -82,13 +84,14 @@ const reset = async(req, res) => {
             ResultsMestGroup.remove({}).exec()
             ResultsMestRace.remove({}).exec()
             ResultsUbre.remove({}).exec()
-            PuntosExpoOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosExpoCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosCriaOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosCriaCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsocOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsocCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsoc.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            ResultsOrdeno.remove({}).exec()
+            await PuntosExpoOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosExpoCapri.updateMany({'status':true},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0,'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
+            await PuntosCriaOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosCriaCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, 'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
+            await PuntosAsocOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosAsocCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0,'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
+            await PuntosAsoc.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0,'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
 
 
         }else if(results == true){
@@ -104,13 +107,14 @@ const reset = async(req, res) => {
             ResultsMestGroup.remove({}).exec()
             ResultsMestRace.remove({}).exec()
             ResultsUbre.remove({}).exec()
-            PuntosExpoOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosExpoCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosCriaOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosCriaCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsocOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsocCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
-            PuntosAsoc.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await AnimalEx.updateMany({'milker':true},{$set:{'status':true}}).exec()
+            await PuntosExpoOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosExpoCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, 'ubre':0, 'ordeno':0,updated_at: new Date()}}).exec()
+            await PuntosCriaOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosCriaCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, 'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
+            await PuntosAsocOvi.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, updated_at: new Date()}}).exec()
+            await PuntosAsocCapri.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0, 'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
+            await PuntosAsoc.updateMany({},{$set:{'primero_category':0, 'segundo_category':0, 'tercero_category':0, 'menor':0, 'joven':0, 'adulto':0, 'raza':0, 'reservado':0,'ubre':0, 'ordeno':0, updated_at: new Date()}}).exec()
             
         }   
         if(participants == true){

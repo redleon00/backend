@@ -23,7 +23,7 @@ const TablaAsocCapri = mongoose.model('PtsAsocCapri')
 
 const resultCategory = async (req, res) => {
     try {
-        let results = await ResultCModel.find({ }).sort({ 'race': -1, }).exec();
+        let results = await ResultsC.find({ }).sort({ '_id': 1, }).exec();
         return res.json(results);
     } catch (error) {
         console.log(error)
@@ -32,7 +32,7 @@ const resultCategory = async (req, res) => {
 
 const resultGroup = async (req, res) => {
     try {
-        let results = await ResultGModel.find({ }).sort({ 'race': -1, }).exec();
+        let results = await ResultsG.find({ }).sort({ 'race': -1, }).exec();
         return res.json(results);
     } catch (error) {
         console.log(error)
@@ -41,7 +41,7 @@ const resultGroup = async (req, res) => {
 
 const resultRace = async (req, res) => {
     try {
-        let results = await ResultRModel.find({ }).sort({ 'race': -1, }).exec();
+        let results = await ResultsR.find({ }).sort({ 'race': -1, }).exec();
         return res.json(results);
     } catch (error) {
         console.log(error)
@@ -50,7 +50,7 @@ const resultRace = async (req, res) => {
 
 const resultSupreme = async (req, res) => {
     try {
-        let results = await ResultSModel.find({ }).sort({ 'sex': -1, }).exec();
+        let results = await ResultsS.find({ }).sort({ 'sex': -1, }).exec();
         return res.json(results);
     } catch (error) {
         console.log(error)
@@ -81,8 +81,8 @@ const resultExpo = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado"
+                    ]}}},{$sort:{"total":-1}}])
         
         let resultsExpoCapri = await TablaExpoCapri.
         aggregate([
@@ -97,6 +97,8 @@ const resultExpo = async (req, res) => {
                 adulto:1, 
                 raza:1, 
                 reservado:1, 
+                ubre:1,
+                ordeno:1,
                 "total":{
                     $sum:[
                         "$primero_category",
@@ -106,8 +108,10 @@ const resultExpo = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado",
+                        "$ubre",
+                        "$ordeno"
+                    ]}}},{$sort:{"total":-1}}])
 
 
         return res.json({dataExpoOvi:resultsExpoOvi, dataExpoCapri:resultsExpoCapri});
@@ -140,8 +144,8 @@ const resultCria = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado"
+                    ]}}},{$sort:{"total":-1}}])
         
         let resultsCriaCapri = await TablaCriaCapri.
         aggregate([
@@ -156,6 +160,8 @@ const resultCria = async (req, res) => {
                 adulto:1, 
                 raza:1, 
                 reservado:1, 
+                ubre:1,
+                ordeno:1,
                 "total":{
                     $sum:[
                         "$primero_category",
@@ -165,8 +171,10 @@ const resultCria = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado",
+                        "$ubre",
+                        "$ordeno"
+                    ]}}},{$sort:{"total":-1}}])
 
 
         return res.json({dataCriaOvi:resultsCriaOvi, dataCriaCapri:resultsCriaCapri});
@@ -198,8 +206,8 @@ const resultAsoc = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado"
+                    ]}}},{$sort:{"total":-1}}])
         
         let resultsAsocCapri = await TablaAsocCapri.
         aggregate([
@@ -213,6 +221,8 @@ const resultAsoc = async (req, res) => {
                 adulto:1, 
                 raza:1, 
                 reservado:1, 
+                ubre:1,
+                ordeno:1,
                 "total":{
                     $sum:[
                         "$primero_category",
@@ -222,8 +232,10 @@ const resultAsoc = async (req, res) => {
                         "$joven",
                         "$adulto",
                         "$raza",
-                        "$supremo"
-                    ]}}},{$sort:{team:1}}])
+                        "$reservado",
+                        "$ubre",
+                        "$ordeno"
+                    ]}}},{$sort:{"total":-1}}])
 
 
         return res.json({dataAsocOvi:resultsAsocOvi, dataAsocCapri:resultsAsocCapri});
